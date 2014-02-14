@@ -36,6 +36,14 @@ namespace l1menu
 		virtual const std::string name() const = 0;
 		virtual unsigned int version() const = 0;
 		virtual const l1menu::ITriggerEvent& getEvent() const = 0;
+
+		/** @brief Which type of ISample the architecture came from.
+		 *
+		 * For most purposes this is irrelevant. However since each architecture has to be
+		 * coded for each ISample implementation there could potentially be a mismatch. This
+		 * method is intended more for regression testing etcetera to test that architectures
+		 * for the different ISample implementations do in fact give the same results.*/
+		virtual const std::string sampleType() const = 0;
 	};
 
 } // end of namespace l1menu

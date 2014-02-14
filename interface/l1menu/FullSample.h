@@ -3,12 +3,14 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 #include "l1menu/ISample.h"
 
 // Forward declarations
 namespace l1menu
 {
 	class L1TriggerDPGEvent;
+	class ITriggerArchitecture;
 }
 
 
@@ -37,6 +39,12 @@ namespace l1menu
 		void loadFile( const std::string& filename );
 		void loadFilesFromList( const std::string& filenameOfList );
 		const l1menu::L1TriggerDPGEvent& getFullEvent( size_t eventNumber ) const;
+
+		virtual const std::vector< std::pair<std::string,unsigned int> > availableArchitectures() const;
+		virtual bool providesArchitecture( const std::string& architectureName ) const;
+		virtual bool providesArchitecture( const std::string& architectureName, unsigned int version ) const;
+		virtual const l1menu::ITriggerArchitecture& getArchitecture( const std::string& architectureName ) const;
+		virtual const l1menu::ITriggerArchitecture& getArchitecture( const std::string& architectureName, unsigned int version ) const;
 
 		virtual size_t numberOfEvents() const;
 		virtual const l1menu::IEvent& getEvent( size_t eventNumber ) const;

@@ -458,6 +458,37 @@ const l1menu::L1TriggerDPGEvent& l1menu::FullSample::getFullEvent( size_t eventN
 	return pImple_->currentEvent;
 }
 
+const std::vector< std::pair<std::string,unsigned int> > l1menu::FullSample::availableArchitectures() const
+{
+	std::vector< std::pair<std::string,unsigned int> > returnValue;
+	returnValue.push_back( std::make_pair( "Fallback", 0 ) );
+	return returnValue;
+}
+
+bool l1menu::FullSample::providesArchitecture( const std::string& architectureName ) const
+{
+	if( architectureName=="Fallback" ) return true;
+	else return false;
+}
+
+bool l1menu::FullSample::providesArchitecture( const std::string& architectureName, unsigned int version ) const
+{
+	if( architectureName=="Fallback" && version==0 ) return true;
+	else return false;
+}
+
+const l1menu::ITriggerArchitecture& l1menu::FullSample::getArchitecture( const std::string& architectureName ) const
+{
+	if( architectureName!="Fallback" ) throw std::runtime_error( "Unsupported trigger architecture" );
+	throw std::runtime_error( "Not implemented yet" );
+}
+
+const l1menu::ITriggerArchitecture& l1menu::FullSample::getArchitecture( const std::string& architectureName, unsigned int version ) const
+{
+	if( architectureName!="Fallback" || version!=0 ) throw std::runtime_error( "Unsupported trigger architecture" );
+	throw std::runtime_error( "Not implemented yet" );
+}
+
 size_t l1menu::FullSample::numberOfEvents() const
 {
 	return static_cast<size_t>( pImple_->inputNtuple.GetEntries() );
