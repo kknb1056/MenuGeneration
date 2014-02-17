@@ -3,12 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <stdexcept>
 #include "l1menu/ITriggerDescription.h"
 
 // Forward declarations
 namespace l1menu
 {
 	class L1TriggerDPGEvent;
+	class L1TriggerEvent;
 }
 
 
@@ -51,7 +53,17 @@ namespace l1menu
 	{
 	public:
 		virtual ~ITrigger() {}
+		/// @deprecated @brief Legacy method. May throw a not_implemented_error in some triggers.
 		virtual bool apply( const l1menu::L1TriggerDPGEvent& event ) const = 0;
+
+		/** @brief Returns whether the trigger would fire on the given event.
+		 * Until I've fully implemented this in all triggers I'll add a default implementation
+		 * that throws an exception. This will be taken out and the class made pure virtual soon.*/
+		virtual bool apply( const l1menu::L1TriggerEvent& event ) const
+		{
+			throw std::logic_error( "apply( const l1menu::L1TriggerEvent& event ) has not been implemented by this subclass." );
+		}
+
 		virtual bool thresholdsAreCorrelated() const = 0;
 		/** @brief A version of the method from ITriggerEvent that allows the parameter to be changed. */
 		virtual float& parameter( const std::string& parameterName ) = 0;

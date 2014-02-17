@@ -1,5 +1,6 @@
 #include "../implementation/RegisterTriggerMacro.h"
 #include "l1menu/L1TriggerDPGEvent.h"
+#include "l1menu/ITriggerEvent.h"
 
 #include <stdexcept>
 #include "UserCode/L1TriggerUpgrade/interface/L1AnalysisDataFormat.h"
@@ -47,6 +48,7 @@ namespace l1menu
 		public:
 			virtual unsigned int version() const;
 			virtual bool apply( const l1menu::L1TriggerDPGEvent& event ) const;
+			virtual bool apply( const l1menu::ITriggerEvent& event ) const;
 			virtual bool thresholdsAreCorrelated() const;
 		}; // end of version 0 class
 
@@ -114,6 +116,28 @@ bool l1menu::triggers::DoubleJetCentral_v0::apply( const l1menu::L1TriggerDPGEve
 	bool ok=(n1>=1&&n2>=2);
 
 	return ok;
+}
+
+bool l1menu::triggers::DoubleJetCentral_v0::apply( const l1menu::ITriggerEvent& event ) const
+{
+	size_t numberPassingThreshold1=0;
+	size_t numberPassingThreshold2=0;
+
+	for( const auto& jet : event.jets() )
+	{
+		if( jet->bunchCrossing()!=0 ) continue;
+		if( jet->isForwardJet() ) continue;
+		if( jet->isTauJet() ) continue;
+
+		float eta=jet->eta();
+		if( eta < regionCut_ || eta > 21.-regionCut_ ) continue;
+
+		float pT=jet->transverseEnergy();
+		if( pT>=threshold1_ ) ++numberPassingThreshold1;
+		if( pT>=threshold2_ ) ++numberPassingThreshold2;
+	}
+
+	return numberPassingThreshold1>=1 && numberPassingThreshold2>=2;
 }
 
 bool l1menu::triggers::DoubleJetCentral_v0::thresholdsAreCorrelated() const
